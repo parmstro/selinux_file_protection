@@ -1,0 +1,40 @@
+---
+# author: Paul Armstrong (parmstro)
+# date: 2023-03-13
+# purpose: template the policy variables in to policy files
+
+- ansible.builtin.set_fact:
+    policy_dir: "/root/policy"
+
+- name: "Ensure the policy directory"
+  ansible.builtin.file: 
+    path: "{{ policy_dir }}"
+    state: directory
+
+- name: "Ensure the selinux type directory"
+  ansible.builtin.file:
+    path: "{{ policy_dir }}/{{ selinux_type.name }}"
+    state: directory
+
+- name: "Template the file context file"
+  ansible.builtin.template:
+    src: "templates/sfp_type.fc.j2"
+    dest: "{{ policy_dir }}/{{ selinux_type.name }}/{{ selinux_type.name }}.fc"
+
+- name: "Template the interface file"
+  ansible.builtin.template:
+    src: "templates/sfp_type.if.j2"
+    dest: "{{ policy_dir }}/{{ selinux_type.name }}/{{ selinux_type.name }}.if"
+
+- name: "Template the type extension file"
+  ansible.builtin.template:
+    src: "templates/sfp_type.te.j2"
+    dest: "{{ policy_dir }}/{{ selinux_type.name }}/{{ selinux_type.name }}.te"
+
+- name: "Compile the policy file"
+  ansible.builtin.shell: "chdir={{ policy_dir }}/{{ selinux_type.name }}/ make -f /usr/share/selinux/devel/Makefile {{ selinux_type.name }}.pp"
+
+- name: "Install the policy file"
+  ansible.builtin.command: "semodule -i {{ policy_dir }}/{{ selinux_type.name }}/{{ selinux_type.name }}.pp"
+
+

@@ -2,24 +2,25 @@
 # This is the main play
 - name: "Create the selinux type policies and load them"
   hosts: all
+  become: true
   gather_facts: true
+  vars_files: 
+    - vars/sfp_vault.yml
+    - vars/sfp_vars.yml
 
   tasks:
 
   - name: "Ensure required policy tools are installed."
-    ansible.builtin.include_tasks: tasks/ensure_policy_tools.yml
+    ansible.builtin.include_tasks: tasks/ensure_tools.yml
+    loop: "{{ tools }}"
+    loop_control:
+      loop_var: tl
 
-  - name: "Ensire required security tools are installed"
-    ansible.builtin.include_tasks: tasks/ensure_security_tools.yml
-
-  - name: "Template the policy files"
-    ansible.builtin.include_tasks: tasks/template_policy_files.yml
-
-  - name: "Compile the policy files"
-    ansible.builtin.include_tasks: tasks/make_policy_files.yml
-
-  - name: "Install the policy files"
-    ansible.builtin.include_tasks: tasks/install_policy_files.yml
+  - name: "Ensure selinux type policies are created and installed"
+    ansible.builtin.include_tasks: tasks/ensure_selinux_type_policies.yml
+    loop: "{{ selinux_types }}"
+    loop_control:
+      loop_var: selinux_type
 
   - name: "Generate and label the sample data"
     ansible.builtin.include_tasks: tasks/generate_and_label_sample_data.yml

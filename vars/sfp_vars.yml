@@ -1,0 +1,20 @@
+---
+
+tools:
+  - list:
+    - policycoreutils
+    - policycoreutils-devel
+    - setools-console
+  - list:
+    - bcc-tools
+    - bpftrace
+    - kernel-devel.x86_64
+
+selinux_types:
+  - name: confidential_data
+    user: staff_t
+    type: confidential_data_t
+  - name: nonconfidential_data
+    user: user_t
+    type: nonconfidential_data_t
+

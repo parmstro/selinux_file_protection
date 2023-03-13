@@ -1,0 +1,13 @@
+policy_module({{ selinux_type.name }}, 1.0)
+
+gen_require(`
+	type {{ selinux_type.user }};
+')
+
+type {{ selinux_type.type }};
+files_type({{ selinux_type.type }})
+files_mountpoint({{ selinux_type.type }})
+
+read_files_pattern({{ selinux_type.user }}, {{ selinux_type.type }}, {{ selinux_type.type }})
+read_lnk_files_pattern({{ selinux_type.user }}, {{ selinux_type.type }}, {{ selinux_type.type }})
+
