@@ -1,0 +1,77 @@
+---
+# This is the main play
+- name: "Create the selinux type policies and load them"
+  hosts: all
+  gather_facts: true
+
+  tasks:
+
+  - name: "Ensure required policy tools are installed."
+    ansible.builtin.include_tasks: tasks/ensure_policy_tools.yml
+
+  - name: "Ensire required security tools are installed"
+    ansible.builtin.include_tasks: tasks/ensure_security_tools.yml
+
+  - name: "Template the policy files"
+    ansible.builtin.include_tasks: tasks/template_policy_files.yml
+
+  - name: "Compile the policy files"
+    ansible.builtin.include_tasks: tasks/make_policy_files.yml
+
+  - name: "Install the policy files"
+    ansible.builtin.include_tasks: tasks/install_policy_files.yml
+
+  - name: "Generate and label the sample data"
+    ansible.builtin.include_tasks: tasks/generate_and_label_sample_data.yml
+
+  - name: "Ensure IdM user groups exist"
+    ansible.builtin.include_tasks: tasks/ensure_idm_user_groups.yml
+
+  - name: "Ensure IdM users exist and are in the proper groups"
+    ansible.builtin.include_tasks: tasks/ensure_idm_users.yml
+
+  - name: "Ensure IdM host groups exist"
+    ansible.builtin.include_tasks: tasks/ensure_idm_hostgroups.yml
+
+  - name: "Ensure IdM hosts are in appropriate host groups"
+    ansible.builtin.include_tasks: tasks/ensure_idm_hosts_in_groups.yml
+
+  - name: "Ensure the HBAC Groups"
+    ansible.builtin.include_tasks: tasks/ensure_idm_hbac_groups.yml
+
+  - name: "Ensure the HBAC Rules"
+    ansible.builtin.include_tasks: tasks/ensure_idm_hbac_rules.yml
+
+  - name: "Ensure the sudo commands"
+    ansible.builtin.include_tasks: tasks/ensure_idm_sudo_commands.yml
+
+  - name: "Create the sudo command groups"
+    ansible.builtin.include_tasks: tasks/ensure_idm_sudo_groups.yml
+
+  - name: "Create the sudo rules"
+    ansible.builtin.include_tasks: tasks/ensure_idm_sudo_rules.yml
+
+  - name: "Create the SELinux user maps"
+    ansible.builtin.include_tasks: tasks/ensure_idm_selinux_maps.yml
+
+  - name: "Create the User Vaults"
+    ansible.builtin.include_tasks: tasks/ensure_idm_user_vaults.yml
+
+  - name: "Add sample information to vaults"
+    ansible.builtin.include_tasks: tasks/ensure_idm_user_vault_data.yml
+
+  - name: "Create the Serivce Vaults"
+    ansible.builtin.include_tasks: tasks/ensure_idm_service_vaults.yml
+
+  - name: "Add sample information to vaults"
+    ansible.builtin.include_tasks: tasks/ensure_idm_service_vault_data.yml
+
+  - name: "Create the Shared Vaults"
+    ansible.builtin.include_tasks: tasks/ensure_idm_shared_vaults.yml
+
+  - name: "Add sample information to vaults"
+    ansible.builtin.include_tasks: tasks/ensure_idm_shared_vault_data.yml
+
+  - name: "Run the data access tests"
+    ansible.builtin.include_tasks: tasks/run_data_access_tests.yml
+
