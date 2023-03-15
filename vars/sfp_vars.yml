@@ -80,11 +80,23 @@ idm_users:
 #     membermanager_user: # a list of users that can manage the members of this group
 
 idm_user_groups:
-  - groupname: "conf_data_access"
-    description: "Access to confidential data - selinux test"
+  - groupname: "dbas"
+    description: "Database system administrators - selinux test"
     users:
       - "alice"
+  - groupname: "developers"
+    description: "Development system administrators - selinux test"
+    users:
       - "bob"
+  - groupname: "qa_team"
+    description: "Software Qualification Team - selinux test"
+    users:
+      - "carl"
+  - groupname: "conf_data_access"
+    description: "Access to confidential data - selinux test"
+    groups:
+      - "dbas"
+      - "qa_team"
   - groupname: "web_admins"
     description: "Manage web servers - sudo rule test"
     users:
@@ -100,6 +112,10 @@ idm_host_groups:
     description: "web server systems"
     hosts:
       - "web1.parmstrong.ca"
+  - groupname: "dev_servers"
+    description: "development systems for software"
+    hosts:
+      - "dev1.parmstrong.ca"
 
 idm_hbac_svc_groups:
   - groupname: "sudo_services"
@@ -165,12 +181,113 @@ idm_sudo_command_groups:
       - "systemctl reload httpd"
 
 idm_sudo_rules:
-  - rulename: "admins_all_access"
+  - rulename: "allow_admins_all_access"
     description: "Allow admins group access to all commands"
-    cmdcatagory: "all"
+    order: 1000
+    sudooption: "!authenticate"
     groups: 
       - "admins"
     hostcategory: "all"
+    cmdcatagory: "all"
     runasusercategory: "all"
     runasgroupcategory: "all"
+    
+  - rulename: "allow_webservice_control"
+    description: "Allow web administrators to control web servers"
+    order: 900
+    groups: 
+      - "web_admins"
+    hostgroups:
+      - web_servers"
+    allow_sudocmdgroups: 
+      - "web_server_administration"
+    runasusercategory: "all"
+    runasgroupcategory: "all"
+
+  - rulename: "allow_data_transfer_control"
+    description: "dbas and qa have privilege on data transfer servers"
+    order: 900
+    groups: 
+      - "conf_data_access"
+    hostgroups:
+      - "date_transfer_servers"
+    cmdcatagory: "all"
+    runasusercategory: "all"
+    runasgroupcategory: "all"
+  
+  - rulename: "allow_dev_system_administration"
+    description: "Allow developers staff level control on development systems"
+    order: 700
     sudooption: "!authenticate"
+    groups:
+      - "developers"
+    hostgroups:
+      - "dev_servers"
+    cmdcatagory: "all"
+    runasusercategory: "all"
+    runasgroupcategory: "all"
+    
+# if you want to add new selinux users to map
+# you add them here, they must exist in the idm config or mapping will fail
+# once mapped, if they don't exist on the host, login will fail (with an obscure error)
+
+# NOTE: the idm_selinux_user_map_order completely replaces 
+# the existing value, you must define the entire order. 
+
+# For proper functioning it must be in ascending order of privilege
+
+# NOTE: the idm_selinux_user_map_order string is $ delimited
+# The defaults are defined below
+idm_config:
+  selinux_user_map_default: "unconfined_u:s0-s0:c0.c1023"
+  selinux_user_map_order: "guest_u:s0$xguest_u:s0$user_u:s0$staff_u:s0-s0:c0.c1023$sysadm_u:s0-s0:c0.c1023$unconfined_u:s0-s0:c0.c1023"
+# add_sids: false   # boolean add SIDs for existing users and groups
+# ca_renew_master_server  # Renewal master for the CA
+# configstring  # extra hashes to generate passwords
+# defaultgroup: "ipausers"  # default group for new users
+# defaultshell: "/bin/bash"  # default shell for new users
+# domain_resolution_order:
+# email_domain:
+# enable_migration:
+# enable_sid:
+# groupobjectclasses
+# groupsearch
+# homedirectory
+# maxhostname
+# maxusername
+# netbios_name
+# pac_types
+# pwdexpnotify
+# searchrecordslimit
+# searchtimelimit
+# user_auth_types
+# userobjectclasses
+# usersearch
+
+idm_selinux_user_maps:
+  - mapname: "dba_map"
+    description: "allow dbas staff access on appropriate systems"
+    selinuxuser: "staff_u:s0-s0:c0.c1023"
+    state: "enabled"
+    groups:
+      - "dbas"
+    hostgroups:
+      - "database_servers"
+      - "data_transfer_servers"
+  - mapname: "dev_map"
+    description: "only allow developers user access on appropriate systems"
+    selinuxuser: "user_u:s0"
+    state: "enabled"
+    groups:
+      - "developers"
+    hostgroups:
+      - "data_transfer_servers"
+  - mapname: "qa_team_map"
+    description: "allow  staff access on appropriate systems"
+    selinuxuser: "staff_u:s0-s0:c0.c1023"
+    state: "enabled"
+    groups:
+      - "qa_team"
+    hostgroups:
+      - "data_transfer_servers"
+

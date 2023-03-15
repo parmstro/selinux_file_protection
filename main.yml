@@ -98,13 +98,18 @@
     tags:
       - tag_idm_sudo_rules
 
+  - name: "Define the SELinux user map configuration"
+    ansible.builtin.include_tasks: tasks/ensure_idm_server_config.yml
+    tags:
+      - tag_idm_server_config
+
   - name: "Create the SELinux user maps"
     ansible.builtin.include_tasks: tasks/ensure_idm_selinux_map.yml
-    loop: "{{ idm_selinux_maps }}"
+    loop: "{{ idm_selinux_user_maps }}"
     loop_control:
-      loop_var: ipaselinuxmap
+      loop_var: ipaselinuxusermap
     tags:
-      - tag_idm_selinux_maps
+      - tag_idm_selinux_user_maps
 
   - name: "Create the User Vaults"
     ansible.builtin.include_tasks: tasks/ensure_idm_user_vault.yml

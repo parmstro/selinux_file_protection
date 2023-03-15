@@ -14,6 +14,7 @@
     state: present
     description: "{{ ipagroup.description }}"
     user: "{{ ipagroup.users | default(omit) }}"
+    group: "{{ ipagroup.groups | default(omit) }}"
     gid: "{{ ipagroup.gid | default(omit) }}"
     external: "{{ ipagroup.external | default(omit) }}"
     externalmember: "{{ ipagroup.externalmemebers | default(omit) }}"

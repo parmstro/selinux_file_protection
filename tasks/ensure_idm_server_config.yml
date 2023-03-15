@@ -1,0 +1,34 @@
+---
+# author: Paul Armstrong (parmstro)
+# date: 2023-03-13
+# purpose: "Set the values for the configuration of the IdM server"
+
+- name: "Set the values for the configuration of the IdM server"
+  redhat.rhel_idm.ipaconfig:
+    ipaadmin_password: "{{ ipaadmin_password }}"
+    ipaadmin_principal: "{{ ipaadmin_principal | default(omit) }}"
+    add_sids: "{{ idm_config.add_sids | default(omit) }}"
+    ca_renew_master_server: "{{ idm_config.ca_renew_master_server | default(omit) }}"
+    configstring: "{{ idm_config.configstring | default(omit) }}"
+    defaultgroup: "{{ idm_config.defaultgroup | default(omit) }}"
+    defaultshell: "{{ idm_config.defaultshell | default(omit) }}"
+    domain_resolution_order: "{{ idm_config.domain_resolution_order | default(omit) }}"
+    email_domain: "{{ idm_config.email_domain | default(omit) }}"
+    enable_migration: "{{ idm_config.enable_migration | default(omit) }}"
+    enable_sid: "{{ idm_config.enable_sid | default(omit) }}"
+    groupobjectclasses: "{{ idm_config.groupobjectclasses | default(omit) }}"
+    groupsearch: "{{ idm_config.groupsearch | default(omit) }}"
+    homedirectory: "{{ idm_config.homedirectory | default(omit) }}"
+    maxhostname: "{{ idm_config.maxhostname | default(omit) }}"
+    maxusername: "{{ idm_config.maxusername | default(omit) }}"
+    netbios_name: "{{ idm_config.netbios_name | default(omit) }}"
+    pac_type: "{{ idm_config.pac_types | default(omit) }}"
+    pwdexpnotify: "{{ idm_config.pwdexpnotify | default(omit) }}"
+    searchrecordslimit: "{{ idm_config.searchrecordslimit | default(omit) }}"
+    searchtimelimit: "{{ idm_config.searchtimelimit | default(omit) }}"
+    selinuxusermapdefault: "{{ idm_config.selinux_user_map_default | default(omit) }}"
+    selinuxusermaporder: "{{ idm_config.selinux_user_map_order | default(omit) }}"
+    user_auth_type: "{{ idm_config.user_auth_types | default(omit) }}"
+    userobjectclasses: "{{ idm_config.userobjectclasses | default(omit) }}"
+    usersearch: "{{ idm_config.usersearch | default(omit) }}"
+    
