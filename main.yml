@@ -15,64 +15,146 @@
     loop: "{{ tools }}"
     loop_control:
       loop_var: tl
+    tags:
+      - tag_tools
 
   - name: "Ensure selinux type policies are created and installed"
-    ansible.builtin.include_tasks: tasks/ensure_selinux_type_policies.yml
+    ansible.builtin.include_tasks: tasks/ensure_selinux_type_policy.yml
     loop: "{{ selinux_types }}"
     loop_control:
       loop_var: selinux_type
+    tags:
+      - tag_selinux_type_policies
 
   - name: "Generate and label the sample data"
     ansible.builtin.include_tasks: tasks/generate_and_label_sample_data.yml
+    loop: "{{ sample_data }}"
+    loop_control:
+      loop_var: sample
+    tags:
+      - tag_sample_data
 
-  - name: "Ensure IdM user groups exist"
-    ansible.builtin.include_tasks: tasks/ensure_idm_user_groups.yml
+  - name: "Ensure IdM users exist"
+    ansible.builtin.include_tasks: tasks/ensure_idm_user.yml
+    loop: "{{ idm_users }}"
+    loop_control:
+      loop_var: ipauser
+    tags:
+      - tag_idm_users
 
-  - name: "Ensure IdM users exist and are in the proper groups"
-    ansible.builtin.include_tasks: tasks/ensure_idm_users.yml
+  - name: "Ensure IdM user groups exist and contain the proper users"
+    ansible.builtin.include_tasks: tasks/ensure_idm_user_group.yml
+    loop: "{{ idm_user_groups }}"
+    loop_control:
+      loop_var: ipagroup
+    tags:
+      - tag_idm_user_groups
 
   - name: "Ensure IdM host groups exist"
-    ansible.builtin.include_tasks: tasks/ensure_idm_hostgroups.yml
+    ansible.builtin.include_tasks: tasks/ensure_idm_hostgroup.yml
+    loop: "{{ idm_host_groups }}"
+    loop_control:
+      loop_var: ipahostgroup
+    tags:
+      - tag_idm_host_groups
 
-  - name: "Ensure IdM hosts are in appropriate host groups"
-    ansible.builtin.include_tasks: tasks/ensure_idm_hosts_in_groups.yml
-
-  - name: "Ensure the HBAC Groups"
-    ansible.builtin.include_tasks: tasks/ensure_idm_hbac_groups.yml
+  - name: "Ensure the HBAC Service Groups"
+    ansible.builtin.include_tasks: tasks/ensure_idm_hbac_group.yml
+    loop: "{{ idm_hbac_groups }}"
+    loop_control:
+      loop_var: ipahbacsvcgroup
+    tags:
+      - tag_idm_hbac_groups
 
   - name: "Ensure the HBAC Rules"
-    ansible.builtin.include_tasks: tasks/ensure_idm_hbac_rules.yml
+    ansible.builtin.include_tasks: tasks/ensure_idm_hbac_rule.yml
+    loop: "{{ idm_hbac_rules }}"
+    loop_control:
+      loop_var: ipahbacrule
+    tags:
+      - tag_idm_hbac_rules
 
   - name: "Ensure the sudo commands"
-    ansible.builtin.include_tasks: tasks/ensure_idm_sudo_commands.yml
+    ansible.builtin.include_tasks: tasks/ensure_idm_sudo_command.yml
+    loop: "{{ idm_sudo_commands }}"
+    loop_control:
+      loop_var: ipasudocommand
+    tags:
+      - tag_idm_sudo_commands
 
   - name: "Create the sudo command groups"
-    ansible.builtin.include_tasks: tasks/ensure_idm_sudo_groups.yml
+    ansible.builtin.include_tasks: tasks/ensure_idm_sudo_group.yml
+    loop: "{{ idm_sudo_command_groups }}"
+    loop_control:
+      loop_var: ipasudocommandgroup
+    tags:
+      - tag_idm_sudo_cg
 
   - name: "Create the sudo rules"
-    ansible.builtin.include_tasks: tasks/ensure_idm_sudo_rules.yml
+    ansible.builtin.include_tasks: tasks/ensure_idm_sudo_rule.yml
+    loop: "{{ idm_sudo_rules }}"
+    loop_control:
+      loop_var: ipasudorule
+    tags:
+      - tag_idm_sudo_rules
 
   - name: "Create the SELinux user maps"
-    ansible.builtin.include_tasks: tasks/ensure_idm_selinux_maps.yml
+    ansible.builtin.include_tasks: tasks/ensure_idm_selinux_map.yml
+    loop: "{{ idm_selinux_maps }}"
+    loop_control:
+      loop_var: ipaselinuxmap
+    tags:
+      - tag_idm_selinux_maps
 
   - name: "Create the User Vaults"
-    ansible.builtin.include_tasks: tasks/ensure_idm_user_vaults.yml
+    ansible.builtin.include_tasks: tasks/ensure_idm_user_vault.yml
+    loop: "{{ idm_user_vaults }}"
+    loop_control:
+      loop_var: ipauservault
+    tags:
+      - tag_idm_user_vaults
 
   - name: "Add sample information to vaults"
     ansible.builtin.include_tasks: tasks/ensure_idm_user_vault_data.yml
+    loop: "{{ idm_uv_sample_data }}"
+    loop_control:
+      loop_var: uv_sd
+    tags:
+      - tag_idm_uv_sample_data
 
   - name: "Create the Serivce Vaults"
-    ansible.builtin.include_tasks: tasks/ensure_idm_service_vaults.yml
+    ansible.builtin.include_tasks: tasks/ensure_idm_service_vault.yml
+    loop: "{{ idm_service_vaults }}"
+    loop_control:
+      loop_var: ipaservicevault
+    tags:
+      - tag_idm_service_vaults
 
   - name: "Add sample information to vaults"
     ansible.builtin.include_tasks: tasks/ensure_idm_service_vault_data.yml
+    loop: "{{ idm_sv_sample_data }}"
+    loop_control:
+      loop_var: sv_sd
+    tags:
+      - tag_idm_sv_sample_data
 
   - name: "Create the Shared Vaults"
-    ansible.builtin.include_tasks: tasks/ensure_idm_shared_vaults.yml
+    ansible.builtin.include_tasks: tasks/ensure_idm_shared_vault.yml
+    loop: "{{ idm_shared_vaults }}"
+    loop_control:
+      loop_var: ipasharedvault
+    tags:
+      - tag_idm_shared_vaults
 
   - name: "Add sample information to vaults"
     ansible.builtin.include_tasks: tasks/ensure_idm_shared_vault_data.yml
+    loop: "{{ idm_shv_sample_data }}"
+    loop_control:
+      loop_var: shv_sd
+    tags:
+      - tag_shv_sample_data
 
   - name: "Run the data access tests"
     ansible.builtin.include_tasks: tasks/run_data_access_tests.yml
-
+    tags:
+      - run_data_access_tests

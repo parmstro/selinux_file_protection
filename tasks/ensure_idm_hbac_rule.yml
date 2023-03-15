@@ -1,0 +1,22 @@
+---
+# author: Paul Armstrong (parmstro)
+# date: 2023-03-13
+# purpose: "Ensure the HBAC rule exists in the proper state"
+
+- name: "Ensure the HBAC rule exists in the proper state"
+  redhat.rhel_idm.ipahbacrule:
+    ipaadmin_password: "{{ ipaadmin_password }}"
+    ipaadmin_principal: "{{ ipaadmin_principal | default(omit) }}"
+    name: "{{ ipahbacrule.rulename }}"
+    state: present
+    description: "{{ ipahbacrule.description | default(omit) }}"
+    user: "{{ ipahbacrule.users | default(omit) }}"
+    group: "{{ ipahbacrule.groups | default(omit) }}"
+    usercategory: "{{ ipahbacrule.usercategory | default(omit) }}"
+    host: "{{ ipahbacrule.hosts | default(omit) }}"
+    hostgroup: "{{ ipahbacrule.hostgroups | default(omit) }}"
+    hostcategory: "{{ ipahbacrule.hostcategory | default(omit) }}"
+    hbacsvc: "{{ ipahbacrule.hbacsvc | default(omit) }}"
+    hbacsvcgroup: "{{ ipahbacrule.hbacsvcgroup | default(omit) }}"
+    servicecategory: "{{ ipahbacrule.servicecategory | default(omit) }}"
+    nomembers: "{{ ipahbacrule.nomembers | default(omit) }}"

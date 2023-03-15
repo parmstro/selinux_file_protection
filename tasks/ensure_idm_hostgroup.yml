@@ -1,0 +1,17 @@
+---
+# author: Paul Armstrong (parmstro)
+# date: 2023-03-13
+# purpose: ensure the idm host group exists
+
+- name: "Ensure the idm host group exists"
+  redhat.rhel_idm.ipahostgroup:
+    ipaadmin_password: "{{ ipaadmin_password }}"
+    ipaadmin_principal: "{{ ipaadmin_principal | default(omit) }}"
+    name: "{{ ipahostgroup.groupname }}"
+    state: present
+    description: "{{ ipahostgroup.description }}"
+    host: "{{ ipahostgroup.hosts | default(omit) }}"
+    hostgroup: "{{ ipahostgroup.hostgroups | default(omit) }}"
+    membermanager_group: "{{ ipahostgroup.membermanager_groups }}"
+    membermanager_user: "{{ ipahostgroup.membermanager_users }}"
+    rename: "{{ ipahostgroup.rename | default(omit) }}"

@@ -11,10 +11,166 @@ tools:
     - kernel-devel.x86_64
 
 selinux_types:
-  - name: confidential_data
-    user: staff_t
-    type: confidential_data_t
-  - name: nonconfidential_data
-    user: user_t
-    type: nonconfidential_data_t
+  - name: "confidential_data"
+    user: "staff_t"
+    type: "confidential_data_t"
+  - name: "nonconfidential_data"
+    user: "user_t"
+    type: "nonconfidential_data_t"
 
+sample_data:
+  - name: "confidential_data"
+    label: "confidential_data_t"
+    folder: "/sample_data/confidential_data"
+    file: "confidential_data.txt"
+  - name: "nonconfidential_data"
+    label: "nonconfidential_data_t"
+    folder: "/sample_data/nonconfidential_data"
+    file: "nonconfidential_data.txt"
+
+idm_users:
+  - login: "alice"
+    first: "Alicia N"
+    last: "Van Der Lande"
+    shell: "/bin/bash"
+    password: "{{ vault_default_password }}"
+  - login: "bob"
+    first: "Robert"
+    last: "Surunkle"
+    shell: "/bin/bash"
+    password: "{{ vault_default_password }}"
+  - login: "carl"
+    first: "Carl"
+    last: "Mell"
+    shell: "/bin/bash"
+    password: "{{ vault_default_password }}"
+  - login: "dorothy"
+    first: "Dorothy"
+    last: "Torr-Nader"
+    shell: "/bin/bash"
+    password: "{{ vault_default_password }}"
+  - login: "eddie"
+    first: "Edward"
+    last: "Current"
+    shell: "/bin/bash"
+    password: "{{ vault_default_password }}"
+  - login: "frank"
+    first: "Frank Lee"
+    last: "Scarlett"
+    shell: "/bin/bash"
+    password: "{{ vault_default_password }}"
+  
+
+# Full definition
+# idm_user_groups:
+#   - groupname: "NameOfGroup"
+#     description: "This is a description of NameOfGroup"
+#     user:
+#       - carl
+#       - dorothy
+#     gid: 1023   # use to match/recreate an implementation
+#     external: boolean - whether or not this is an external group type
+#     externalmember:  # a list of AD Groups or users
+#       - WIN\Web_Admins
+#       - WIN\SQL_Admins
+#     posix: boolean - whether or not this is a posix style group
+#     nonposix: boolean - whether or not this is a nonposix group
+#     service: # a list of services that are part of the group
+#     membermanager_group: # a list of groups that can manage the members of this group
+#     membermanager_user: # a list of users that can manage the members of this group
+
+idm_user_groups:
+  - groupname: "conf_data_access"
+    description: "Access to confidential data - selinux test"
+    users:
+      - "alice"
+      - "bob"
+  - groupname: "web_admins"
+    description: "Manage web servers - sudo rule test"
+    users:
+      - "eddie"
+      - "frank"
+
+idm_host_groups:
+  - groupname: "data_transfer_servers"
+    description: "servers used to transfer test data from production sources"
+    hosts:
+      - "datatransfer1.parmstrong.ca"
+  - groupname: "web_servers"
+    description: "web server systems"
+    hosts:
+      - "web1.parmstrong.ca"
+
+idm_hbac_svc_groups:
+  - groupname: "sudo_services"
+    description: "Common sudo and su system interactions"
+    hbacservices:
+      - "sudo"
+      - "sudo-i"
+  - groupname: "ftp_services"
+    description: "Common ftp services for system interactions"
+    hbacservices:
+      - "ftp"
+      - "gssftp"
+      - "proftpd"
+      - "pure-ftpd"
+      - "vsftpd"
+
+idm_hbac_rules:
+  - rulename: "allow_all_admins"
+    description: "Allow admins to access all systems"
+    groups:
+      - "admins"
+    hostcategory: "all"
+    servicecategory: "all"
+  - rulename: "allow_webservers"
+    description: "Allow access to web servers"
+    groups:
+      - "web_admins"
+    hostgroups:
+      - "web_servers"
+    servicecategory: "all"
+  - rulename: "allow_data_transfer_servers"
+    description: "Allow access to the data transfer servers"
+    groups:
+      - "conf_data_access"
+      - "web_admins"
+    hostgroups:
+      - "data_transfer_servers"
+    servicecategory: "all"
+
+idm_sudo_commands:
+  - commandname: "/usr/sbin/set_httpd_maintenance.sh"
+    description: "Turn on the maintenance sign"
+  - commandname: "/usr/sbin/unset_httpd_maintenance.sh"
+    description: "Turn off the maintenance sign"
+  - commandname: "systemctl restart httpd"
+    description: "Restart the web server"
+  - commandname: "systemctl start httpd"
+    description: "Start the web server"
+  - commandname: "systemctl stop httpd"
+    description: "Stop the web server"
+  - commandname: "systemctl reload httpd"
+    description: "Reload the web server configuration"
+
+idm_sudo_command_groups:
+  - groupname: "web_server_administration"
+    description: "Commands necessary to control the web server"
+    sudocommands:
+      - "/usr/sbin/set_httpd_maintenance.sh"
+      - "/usr/sbin/unset_httpd_maintenance.sh"
+      - "systemctl restart httpd"
+      - "systemctl start httpd"
+      - "systemctl stop httpd"
+      - "systemctl reload httpd"
+
+idm_sudo_rules:
+  - rulename: "admins_all_access"
+    description: "Allow admins group access to all commands"
+    cmdcatagory: "all"
+    groups: 
+      - "admins"
+    hostcategory: "all"
+    runasusercategory: "all"
+    runasgroupcategory: "all"
+    sudooption: "!authenticate"

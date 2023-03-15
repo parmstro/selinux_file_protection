@@ -1,0 +1,24 @@
+---
+# author: Paul Armstrong (parmstro)
+# date: 2023-03-13
+# purpose: ensure the idm user group is present
+# the task provides for the full implementation of an idm group
+# to ensure expected results please see the documentation
+# https://console.redhat.com/ansible/automation-hub/repo/published/redhat/rhel_idm/content/module/ipagroup/
+
+- name: "Ensure the user group exists"
+  redhat.rhel_idm.ipagroup:
+    ipaadmin_password: "{{ ipaadmin_password }}"
+    ipaadmin_principal: "{{ ipaadmin_principal | default(omit) }}"
+    name: "{{ ipagroup.groupname }}"
+    state: present
+    description: "{{ ipagroup.description }}"
+    user: "{{ ipagroup.users | default(omit) }}"
+    gid: "{{ ipagroup.gid | default(omit) }}"
+    external: "{{ ipagroup.external | default(omit) }}"
+    externalmember: "{{ ipagroup.externalmemebers | default(omit) }}"
+    posix: "{{ ipagroup.posix | default(omit) }}"
+    nonposix: "{{ ipagroup.nonposix | default(omit) }}"
+    service: "{{ ipagroup.service | default(omit) }}"
+    membermanager_group: "{{ ipagroup.membermanager_groups }}"
+    membermanager_user: "{{ ipagroup.membermanager_users }}"

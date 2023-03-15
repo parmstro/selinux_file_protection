@@ -1,0 +1,13 @@
+---
+# author: Paul Armstrong (parmstro)
+# date: 2023-03-13
+# purpose: "Ensure the defined hbac service exists - defines the method of ingress to a system"
+# Most of the standard ones exist. Only use this for non-standard services.
+
+- name: "Ensure the services are properly grouped for use with HBAC rules"
+  redhat.rhel_idm.ipahbacsvc:
+    ipaadmin_password: "{{ ipaadmin_password }}"
+    ipaadmin_principal: "{{ ipaadmin_principal | default(omit) }}"
+    name: "{{ ipahbacsvcgroup.groupname }}"
+    state: present
+    description: "{{ ipahbacsvcgroup.description | default(omit)  }}"

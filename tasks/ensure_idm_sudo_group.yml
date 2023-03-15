@@ -1,0 +1,14 @@
+---
+# author: Paul Armstrong (parmstro)
+# date: 2023-03-13
+# purpose: "Ensure the defined sudo command group is configured"
+
+- name: "Ensure the defined sudo command group is configured"
+  redhat.rhel_idm.ipasudocmdgrp:
+    ipaadmin_password: "{{ ipaadmin_password }}"
+    ipaadmin_principal: "{{ ipaadmin_principal | default(omit) }}"
+    name: "{{ ipasudocommandgroup.groupname }}"
+    state: present
+    description: "{{ ipasudocommandgroup.description | default(omit) }}"
+    sudocmd: "{{ ipasudocommandgroup.sudocommands | default(omit)  }}"
+    nomembers: "{{ ipasudocommandgroup.nomembers | default(omit)  }}"

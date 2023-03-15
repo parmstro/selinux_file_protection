@@ -1,0 +1,31 @@
+---
+# author: Paul Armstrong (parmstro)
+# date: 2023-03-13
+# purpose: "Ensure the defined sudo rule is configured"
+
+- name: "Ensure the defined sudo rule is configured"
+  redhat.rhel_idm.ipasudorule:
+    ipaadmin_password: "{{ ipaadmin_password }}"
+    ipaadmin_principal: "{{ ipaadmin_principal | default(omit) }}"
+    name: "{{ ipasudorule.rulename }}"
+    state: present
+    description: "{{ ipasudorule.description | default(omit) }}"
+    allow_sudocmd: "{{ ipasudorule.allow_cmds | default(omit) }}"
+    allow_sudocmdgroup: "{{ ipasudorule.allow_cmdgroups | default(omit) }}"
+    cmdcatagory: "{{ ipasudorule.cmdcategory | default(omit) }}"
+    deny_sudocmd: "{{ ipasudorule.deny_cmds | default(omit) }}"
+    deny_sudocmdgroup: "{{ ipasudorule.deny_cmdgroups | default(omit) }}"
+    user: "{{ ipasudorule.users | default(omit) }}"
+    group: "{{ ipasudorule.groups | default(omit) }}"
+    usercategory: "{{ ipasudorule.usercategory | default(omit) }}"
+    host: "{{ ipasudorule.hosts | default(omit) }}"
+    hostgroup: "{{ ipasudorule.hostgroups | default(omit) }}"
+    hostmask: "{{ ipasudorule.hostip_prefix | default(omit) }}"
+    hostcategory: "{{ ipasudorule.hostcategory | default(omit) }}"
+    nomembers: "{{ ipasudorule.description | default(omit) }}"
+    order: "{{ ipasudorule.description | default(omit) }}"
+    runasuser: "{{ ipasudorule.description | default(omit) }}"
+    runasusercategory: "{{ ipasudorule.description | default(omit) }}"
+    runasgroup: "{{ ipasudorule.description | default(omit) }}"
+    runasgroupcategory: "{{ ipasudorule.description | default(omit) }}"
+    sudooption: "{{ ipasudorule.description | default(omit) }}"

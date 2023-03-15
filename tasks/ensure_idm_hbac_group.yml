@@ -1,0 +1,14 @@
+---
+# author: Paul Armstrong (parmstro)
+# date: 2023-03-13
+# purpose: "Ensure the list of services are aligned in a group for use with HBAC rules"
+
+- name: "Ensure the services are properly grouped for use with HBAC rules"
+  redhat.rhel_idm.ipahbacsvcgroup:
+    ipaadmin_password: "{{ ipaadmin_password }}"
+    ipaadmin_principal: "{{ ipaadmin_principal | default(omit) }}"
+    name: "{{ ipahbacsvcgroup.groupname }}"
+    state: present
+    hbacsvc: "{{ ipahbacsvcgroup.hbacservices }}"
+    description: "{{ ipahbacsvcgroup.description | default(omit)  }}"
+    nomembers: "{{ ipahbacsvcgroup.nomembers | default(omit)  }}"

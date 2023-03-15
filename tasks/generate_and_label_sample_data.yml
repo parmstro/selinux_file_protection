@@ -3,3 +3,16 @@
 # date: 2023-03-13
 # purpose: generate sample data for our policy tests.
 
+
+- name: "Create the sample file directory"
+  ansible.builtin.file:
+    name: "{{ sample.folder }}"
+    state: directory
+    setype: "{{ sample.label }}"
+
+- name: "Copy the sample file"
+  ansible.builtin.copy:
+    src: "files/{{ sample.file }}"
+    dest: "{{ sample.folder }}/{{ sample.file }}"
+    setype: "{{ sample.label }}"
+

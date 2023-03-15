@@ -1,4 +1,3 @@
 selinux_file_protection.code-workspace
 ansible.cfg
-*_vault.yml
 inventory
